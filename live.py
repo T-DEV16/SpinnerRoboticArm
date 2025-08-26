@@ -6,9 +6,28 @@ from dotenv import load_dotenv
 class LiveAdvance():
     """
     A class to show mental command data at live mode of trained profile.
-    Simplified for single "lift" command only, but with full sensitivity control.
-    """
+    You can load a profile trained on EmotivBCI or via train.py example
 
+    Attributes
+    ----------
+    c : Cortex
+        Cortex communicate with Emotiv Cortex Service
+
+    Methods
+    -------
+    start():
+        To start a live mental command  process from starting a websocket
+    load_profile(profile_name):
+        To load an existed profile or create new profile for training
+    unload_profile(profile_name):
+        To unload an existed profile or create new profile for training
+    get_active_action(profile_name):
+        To get active actions for the mental command detection.
+    get_sensitivity(profile_name):
+        To get the sensitivity of the active mental command actions.
+    set_sensitivity(profile_name):
+        To set the sensitivity of the active mental command actions.
+    """
     def __init__(self, app_client_id, app_client_secret, **kwargs):
         self.c = Cortex(app_client_id, app_client_secret, debug_mode=True, **kwargs)
         self.c.bind(create_session_done=self.on_create_session_done)
@@ -22,7 +41,21 @@ class LiveAdvance():
 
     def start(self, profile_name, headsetId=''):
         """
-        To start live mental command process
+        To start live process as below workflow
+        (1) check access right -> authorize -> connect headset->create session
+        (2) query profile -> get current profile -> load/create profile
+        (3) get MC active action -> get MC sensitivity -> set new MC sensitivity -> save profile
+        (4) subscribe 'com' data to show live MC data
+        Parameters
+        ----------
+        profile_name : string, required
+            name of profile
+        headsetId: string , optional
+             id of wanted headet which you want to work with it.
+             If the headsetId is empty, the first headset in list will be set as wanted headset
+        Returns
+        -------
+        None
         """
         if profile_name == '':
             raise ValueError('Empty profile_name. The profile_name cannot be empty.')
@@ -38,18 +71,44 @@ class LiveAdvance():
     def load_profile(self, profile_name):
         """
         To load a profile
+
+        Parameters
+        ----------
+        profile_name : str, required
+            profile name
+
+        Returns
+        -------
+        None
         """
         self.c.setup_profile(profile_name, 'load')
 
     def unload_profile(self, profile_name):
         """
         To unload a profile
+        Parameters
+        ----------
+        profile_name : str, required
+            profile name
+
+        Returns
+        -------
+        None
         """
         self.c.setup_profile(profile_name, 'unload')
 
     def save_profile(self, profile_name):
         """
         To save a profile
+
+        Parameters
+        ----------
+        profile_name : str, required
+            profile name
+
+        Returns
+        -------
+        None
         """
         self.c.setup_profile(profile_name, 'save')
 
@@ -59,6 +118,15 @@ class LiveAdvance():
         'com': Mental command
         'fac' : Facial expression
         'sys': training event
+
+        Parameters
+        ----------
+        streams : list, required
+            list of streams. For example, ['sys']
+
+        Returns
+        -------
+        None
         """
         self.c.sub_request(streams)
 
@@ -66,6 +134,15 @@ class LiveAdvance():
         """
         To get active actions for the mental command detection.
         For our 2-command system: neutral and lift
+
+        Parameters
+        ----------
+        profile_name : str, required
+            profile name
+
+        Returns
+        -------
+        None
         """
         self.c.get_mental_command_active_action(profile_name)
 
@@ -73,23 +150,36 @@ class LiveAdvance():
         """
         To get the sensitivity of the active mental command actions.
         For our 2-command system, this will return sensitivity for lift command.
+
+        Parameters
+        ----------
+        profile_name : str, required
+            profile name
+
+        Returns
+        -------
+        None
         """
         self.c.get_mental_command_action_sensitivity(profile_name)
 
     def set_sensitivity(self, profile_name, values):
         """
-        To set the sensitivity of the mental command actions.
+        To set the sensitivity of the active mental command actions.
         For our 2-command system, we only need sensitivity for 'lift'.
         
-        Parameters:
+        Parameters
+        ----------
         profile_name : str, required
             profile name
         values: list, required
             list of sensitivity values. For 2 commands: [lift_sensitivity]
             The range is from 1 (lowest sensitivity) - 10 (highest sensitivity)
             Example: [7] means lift command has sensitivity 7
+
+        Returns
+        -------
+        None
         """
-        print(f"Setting sensitivity for profile '{profile_name}' to: {values}")
         self.c.set_mental_command_action_sensitivity(profile_name, values)
 
     # callbacks functions
@@ -154,13 +244,23 @@ class LiveAdvance():
         data = kwargs.get('data')
         print('on_mc_action_sensitivity_done: {}'.format(data))
         if isinstance(data, list):
-            # get sensitivity - for our 2-command system, we only need sensitivity for lift
-            # Set sensitivity for lift command (higher = more sensitive, lower = less sensitive)
+            # get sensitivity - for our 2-command system, we need to send 4 values to satisfy the API
+            # Set sensitivity for each command (higher = more sensitive, lower = less sensitive)
             # Range: 1-10 where 1=least sensitive, 10=most sensitive
-            new_values = [5]  # Adjust this number to change sensitivity
+            # IMPORTANT: API expects 4 values, so we set each one individually
+            
+            # Configure each sensitivity value here:
+            sensitivity_1 = 6  # First command sensitivity
+            sensitivity_2 = 6  # Second command sensitivity  
+            sensitivity_3 = 5  # Third command sensitivity
+            sensitivity_4 = 8  # Fourth command sensitivity
+            
+            new_values = [sensitivity_1, sensitivity_2, sensitivity_3, sensitivity_4]
             print(f"Current sensitivity: {data}")
             print(f"Setting new sensitivity: {new_values}")
             print("Sensitivity guide: 1=least sensitive, 5=medium, 10=most sensitive")
+            print(f"Individual sensitivities: [{sensitivity_1}, {sensitivity_2}, {sensitivity_3}, {sensitivity_4}]")
+            print("Note: All 4 values required by API, adjust each one as needed")
             self.set_sensitivity(self.profile_name, new_values)
         else:
             # set sensitivity done -> save profile
@@ -178,20 +278,23 @@ class LiveAdvance():
             print('Get error ' + error_message + ". Disconnect headset to fix this issue for next use.")
             self.c.disconnect_headset()
 
+
 # -----------------------------------------------------------
 # 
 # GETTING STARTED
 #   - Please reference to https://emotiv.gitbook.io/cortex-api/ first.
 #   - Connect your headset with dongle or bluetooth. You can see the headset via Emotiv Launcher
 #   - Please make sure your_app_client_id and your_app_client_secret are set before starting running.
-#   - This version includes full sensitivity control for 2-command system
-# 
+#   - The function on_create_session_done,  on_query_profile_done, on_load_unload_profile_done will help 
+#          handle create and load an profile automatically . So you should not modify them
+#   - After the profile is loaded. We test with some advanced BCI api such as: mentalCommandActiveAction, mentalCommandActionSensitivity..
+#      But you can subscribe 'com' data to get live mental command data after the profile is loaded
 # RESULT
 #    you can run live mode with the trained profile. the data as below:
 #    {'action': 'lift', 'power': 0.85, 'time': 1647525819.0223}
 #    {'action': 'neutral', 'power': 0.0, 'time': 1647525819.1473}
 # 
-# ---------------------------------------------------
+# -----------------------------------------------------------
 
 def main():
     # Load environment variables from .env file
