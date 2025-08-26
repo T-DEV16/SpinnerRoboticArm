@@ -113,7 +113,7 @@ void loop() {
   reset();
   cowabunga();*/
   reset();
-  delay(3000);
+  delay(500);
   grab();
-  delay(10000);
+  delay(500);
 }

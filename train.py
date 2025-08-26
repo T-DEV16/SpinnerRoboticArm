@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 class Train():
     """
     A class to use BCI API to control the training of the mental command detections.
+    Simplified for single "lift" command training only.
 
     Attributes
     ----------
@@ -16,7 +17,6 @@ class Train():
     -------
     start():
         to start a training process from starting a websocket
-
     subscribe_data(streams):
         To subscribe one or more data streams 
     unload_profile(profile_name):
@@ -63,7 +63,7 @@ class Train():
         profile_name : string, required
             name of profile
         actions : list, required
-            list of actions which will be trained
+            list of actions which will be trained (only 'neutral' and 'lift' for this setup)
         headsetId: string , optional
              id of wanted headet which you want to work with it.
              If the headsetId is empty, the first headset in list will be set as wanted headset
@@ -149,15 +149,6 @@ class Train():
         None
         """
         self.c.setup_profile(profile_name, 'save')
-
-    def get_active_action(self, profile_name):
-        self.c.get_mental_command_active_action(profile_name)
-
-    def get_command_brain_map(self, profile_name):
-        self.c.get_mental_command_brain_map(profile_name)
-
-    def get_training_threshold(self):
-        self.c.get_mental_command_training_threshold(profile_name)
 
     def train_mc_action(self, status):
         """
@@ -281,12 +272,16 @@ def main():
     # Init Train
     t=Train(your_app_client_id, your_app_client_secret)
 
-    profile_name = 'pgame' # set your profile name. If the profile is not exited it will be created.
+    profile_name = 'TRAW spins' # set your profile name. If the profile is not exited it will be created.
 
-    # list actions which you want to train
-    actions = ['neutral', 'open', 'shut','lift', 'drop', '']
+    # Only train these two essential commands for the robotic arm
+    # 'neutral' - baseline state (required)
+    # 'lift' - grab action (closes fingers)
+    actions = ['neutral', 'lift']
+    print(f"Training profile '{profile_name}' with actions: {actions}")
+    print("This will enable the robotic arm to respond to your 'lift' mental command")
+    
     t.start(profile_name, actions)
 
 if __name__ =='__main__':
     main()
-# -----------------------------------------------------------

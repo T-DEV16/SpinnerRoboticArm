@@ -1,0 +1,4 @@
+websocket-client==1.6.4
+python-dotenv==1.0.0
+pyserial==3.5
+pydispatch==2.0.5

@@ -2,7 +2,7 @@
     {
         "id": "eed42a866f229c0b",
         "type": "tab",
-        "label": "Flow 3",
+        "label": "Flow 1",
         "disabled": false,
         "info": "",
         "env": []
@@ -25,16 +25,13 @@
         "type": "Profile-Name",
         "z": "eed42a866f229c0b",
         "name": "Profile Name",
-        "profileName": "grace",
+        "profileName": "TRAW spins",
         "x": 980,
         "y": 460,
         "wires": [
             [
                 "ee4ecc8d4a6c4f5e",
-                "49b70ef47778e7da",
-                "43cd67ead1bc2a47",
-                "a2efb0690934a791",
-                "c56cabee77ad2f1d"
+                "49b70ef47778e7da"
             ]
         ]
     },
@@ -49,98 +46,6 @@
         "y": 460,
         "wires": [
             [
-                "626fedaac4886e21"
-            ]
-        ]
-    },
-    {
-        "id": "626fedaac4886e21",
-        "type": "pythonshell in",
-        "z": "eed42a866f229c0b",
-        "name": "Lift Script",
-        "pyfile": "C:\\Users\\sinha\\Documents\\neurotechstuff\\RoboticArm\\Mental_Command_Scripts\\left.py",
-        "virtualenv": "",
-        "continuous": false,
-        "stdInData": false,
-        "x": 1560,
-        "y": 460,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "43cd67ead1bc2a47",
-        "type": "Mental-Command",
-        "z": "eed42a866f229c0b",
-        "name": "Mental Commands",
-        "actionName": "right",
-        "mcSen": 10,
-        "x": 1310,
-        "y": 540,
-        "wires": [
-            [
-                "de6fa81bcd787aac"
-            ]
-        ]
-    },
-    {
-        "id": "de6fa81bcd787aac",
-        "type": "pythonshell in",
-        "z": "eed42a866f229c0b",
-        "name": "Right Script",
-        "pyfile": "C:\\Users\\sinha\\Documents\\neurotechstuff\\RoboticArm\\Mental_Command_Scripts\\right.py",
-        "virtualenv": "",
-        "continuous": false,
-        "stdInData": false,
-        "x": 1570,
-        "y": 540,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "49b70ef47778e7da",
-        "type": "Mental-Command",
-        "z": "eed42a866f229c0b",
-        "name": "Mental Commands",
-        "actionName": "neutral",
-        "mcSen": 10,
-        "x": 1320,
-        "y": 380,
-        "wires": [
-            [
-                "3f4442996bd9413b"
-            ]
-        ]
-    },
-    {
-        "id": "3f4442996bd9413b",
-        "type": "pythonshell in",
-        "z": "eed42a866f229c0b",
-        "name": "Script",
-        "pyfile": "C:\\Users\\sinha\\Documents\\neurotechstuff\\RoboticArm\\Mental_Command_Scripts\\neutral.py",
-        "virtualenv": "",
-        "continuous": false,
-        "stdInData": false,
-        "x": 1550,
-        "y": 380,
-        "wires": [
-            [
-                "9f8f1793fcd839ab"
-            ]
-        ]
-    },
-    {
-        "id": "a2efb0690934a791",
-        "type": "Mental-Command",
-        "z": "eed42a866f229c0b",
-        "name": "Mental Commands",
-        "actionName": "left",
-        "mcSen": 10,
-        "x": 1310,
-        "y": 620,
-        "wires": [
-            [
                 "398c39c4eb576929"
             ]
         ]
@@ -149,13 +54,13 @@
         "id": "398c39c4eb576929",
         "type": "pythonshell in",
         "z": "eed42a866f229c0b",
-        "name": "Left Script",
-        "pyfile": "C:\\Users\\sinha\\Documents\\neurotechstuff\\RoboticArm\\Mental_Command_Scripts\\lift.py",
+        "name": "Grab Script",
+        "pyfile": "/Users/tarundevesetti/Downloads/BCIHCIs/RoboticArm/Mental_CommandScripts/grab.py",
         "virtualenv": "",
         "continuous": false,
         "stdInData": false,
-        "x": 1560,
-        "y": 620,
+        "x": 1550,
+        "y": 460,
         "wires": [
             []
         ]
@@ -184,33 +89,44 @@
         ]
     },
     {
-        "id": "364dc51452f98c37",
-        "type": "pythonshell in",
-        "z": "eed42a866f229c0b",
-        "name": "Drop Script",
-        "pyfile": "C:\\Users\\sinha\\Documents\\neurotechstuff\\RoboticArm\\Mental_Command_Scripts\\drop.py",
-        "virtualenv": "",
-        "continuous": false,
-        "stdInData": false,
-        "x": 1570,
-        "y": 700,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "c56cabee77ad2f1d",
+        "id": "49b70ef47778e7da",
         "type": "Mental-Command",
         "z": "eed42a866f229c0b",
         "name": "Mental Commands",
-        "actionName": "drop",
+        "actionName": "neutral",
         "mcSen": 10,
-        "x": 1310,
-        "y": 700,
+        "x": 1320,
+        "y": 380,
         "wires": [
             [
-                "364dc51452f98c37"
+                "3f4442996bd9413b"
             ]
         ]
+    },
+    {
+        "id": "3f4442996bd9413b",
+        "type": "pythonshell in",
+        "z": "eed42a866f229c0b",
+        "name": "Script",
+        "pyfile": "/Users/tarundevesetti/Downloads/BCIHCIs/RoboticArm/Mental_CommandScripts/neutral.py",
+        "virtualenv": "",
+        "continuous": false,
+        "stdInData": false,
+        "x": 1550,
+        "y": 380,
+        "wires": [
+            [
+                "9f8f1793fcd839ab"
+            ]
+        ]
+    },
+    {
+        "id": "e4667a97e44c3f8b",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-contrib-emotiv-bci": "2.1.5",
+            "node-red-contrib-pythonshell": "1.5.4"
+        }
     }
 ]
