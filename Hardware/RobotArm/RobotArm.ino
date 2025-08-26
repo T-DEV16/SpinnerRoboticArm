@@ -8,7 +8,7 @@
 
 #include <Servo.h>
 
-Servo wrist;
+//Servo wrist;
 Servo pinky;
 Servo ring;
 Servo middle;
@@ -25,22 +25,20 @@ void grab() {
   thumb.write(90);
 }
 
+void surprise() {
+  pinky.write(40);
+  ring.write(5);
+  middle.write(170);
+  index.write(110);
+  thumb.write(90);
+}
+
 void ungrab() {
   pinky.write(150);
   ring.write(110);
   middle.write(170);
   index.write(20);
   thumb.write(150);
-}
-
-void right() {
-  wrist.write(270);
-  delay(3000);
-}
-
-void left() {
-  wrist.write(0);
-  delay(3000);
 }
 
 void reset() {
@@ -55,7 +53,6 @@ void reset() {
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-  wrist.attach(2);
   pinky.attach(3);
   ring.attach(4);
   middle.attach(5);
@@ -71,22 +68,20 @@ void loop() {
     if (userInput == 1) {
       grab();
       Serial.print(1);
+      delay(500);
+      reset();
     }
     else if (userInput == 2) {
-      left();
+      ungrab();
       Serial.print(2);
+      delay(500);
+      reset();
     }
     else if (userInput == 3) {
-      right();
+      surprise();
       Serial.print(3);
-    }
-    else if (userInput == 4) {
-      ungrab();
-      Serial.print(4);
-    }
-    else if (userInput == 5){
+      delay(500);
       reset();
-      Serial.print(5);
     }
   }
 }
